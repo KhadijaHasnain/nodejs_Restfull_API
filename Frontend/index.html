@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formula 1 Timing App</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#">KIT214/514 Formula 1 Timing App</a>
+  </nav>
+
+  <!-- Tabs -->
+  <div class="container">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" id="drivers-tab" data-toggle="tab" href="#drivers">Drivers</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="cars-tab" data-toggle="tab" href="#cars">Cars</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tracks-tab" data-toggle="tab" href="#tracks">Tracks</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="races-tab" data-toggle="tab" href="#races">Races</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="scraper-tab" data-toggle="tab" href="#scraper">Track Scraper</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings">Settings</a>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Drivers Tab -->
+      <div class="tab-pane fade show active" id="drivers">
+        <h3>Drivers</h3>
+        <button class="btn btn-outline-primary mb-3" onclick="fetchDrivers()">Fetch Drivers</button>
+        <button class="btn btn-outline-danger mb-3" onclick="fetchInvalidDrivers()">Fetch Invalid Drivers</button>
+
+        <!-- Driver List Placeholder -->
+        <div class="driver-list">
+          <!-- Drivers will be dynamically loaded here -->
+        </div>
+
+        <!-- Floating Action Button for Add Driver -->
+        <div class="fab-button" onclick="openDriverModal(false)">
+          <span>+</span>
+        </div>  
+      </div>
+
+      <!-- Combined Add/Edit Driver Modal -->
+      <div class="modal fade" id="driverModal" tabindex="-1" role="dialog" aria-labelledby="driverModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="driverModalLabel">Add Driver</h5> <!-- Dynamically change title -->
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="driverForm">
+                <input type="hidden" id="driverId"> <!-- Hidden field for driver ID (used for edit) -->
+                <div class="form-group">
+                  <label for="driverName">Driver Name</label>
+                  <input type="text" class="form-control" id="driverName" placeholder="Enter Driver Name" required>
+                </div>
+                <div class="form-group">
+                  <label for="driverShortName">Driver Short Name</label>
+                  <input type="text" class="form-control" id="driverShortName" placeholder="Enter Driver Short Name" required>
+                </div>
+                <div class="form-group">
+                  <label for="skillRace">Skill (Race)</label>
+                  <input type="number" class="form-control" id="skillRace" placeholder="Enter Race Skill (0-100)" required>
+                </div>
+                <div class="form-group">
+                  <label for="skillStreet">Skill (Street)</label>
+                  <input type="number" class="form-control" id="skillStreet" placeholder="Enter Street Skill (0-100)" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="driverSubmitButton">Add Driver</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Tab -->
+      <div class="tab-pane fade" id="cars">
+        <h3>Cars</h3>
+        <button class="btn btn-outline-primary mb-3" onclick="fetchCars()">Fetch Cars</button>
+        <button class="btn btn-outline-danger mb-3" onclick="fetchInvalidCars()">Fetch Invalid Cars</button>
+
+        <!-- Car List Placeholder -->
+        <div class="car-list">
+          <!-- Cars will be dynamically loaded here -->
+        </div>
+
+        <!-- Floating Action Button to Add Car -->
+        <div class="fab-button" onclick="openCarModal(false)">
+          <span>+</span>
+        </div>  
+      </div>
+
+      <!-- Combined Add/Edit Car Modal -->
+      <div class="modal fade" id="carModal" tabindex="-1" role="dialog" aria-labelledby="carModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="carModalLabel">Add Car</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="carForm">
+                <input type="hidden" id="carId">
+                <div class="form-group">
+                  <label for="driverId">Driver</label>
+                  <select id="driverId" class="form-control">
+                    <!-- Driver options will be dynamically populated -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="reliability">Reliability</label>
+                  <input type="number" class="form-control" id="reliability" required>
+                </div>
+                <div class="form-group">
+                  <label for="suitabilityRace">Suitability (Race)</label>
+                  <input type="number" class="form-control" id="suitabilityRace" required>
+                </div>
+                <div class="form-group">
+                  <label for="suitabilityStreet">Suitability (Street)</label>
+                  <input type="number" class="form-control" id="suitabilityStreet" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="carSubmitButton">Save Car</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracks Tab -->
+<div class="tab-pane fade" id="tracks">
+  <h3>Tracks</h3>
+  <button class="btn btn-outline-primary mb-3" onclick="fetchTracks()">Fetch Tracks</button>
+  <button class="btn btn-outline-danger mb-3" onclick="fetchInvalidTracks()">Show Invalid Records</button>
+
+  <!-- Track List Placeholder -->
+  <div class="track-list">
+    <!-- Tracks will be dynamically loaded here -->
+  </div>
+
+  <!-- Floating Action Button for Adding New Track -->
+  <div class="fab-button" data-toggle="modal" data-target="#addTrackModal">
+    <span>+</span>
+  </div>
+</div>
+
+<!-- Add/Edit Track Modal -->
+<div class="modal fade" id="addTrackModal" tabindex="-1" role="dialog" aria-labelledby="addTrackModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTrackModalLabel">Add New Track</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="trackForm">
+          <input type="hidden" id="trackId"> <!-- Hidden field for track ID -->
+
+          <div class="form-group">
+            <label for="trackName">Track Name</label>
+            <input type="text" class="form-control" id="trackName" placeholder="Enter Track Name" required>
+          </div>
+          <div class="form-group">
+            <label for="trackType">Track Type</label>
+            <select id="trackType" class="form-control">
+              <option value="race">Race</option>
+              <option value="street">Street</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="trackLaps">Laps</label>
+            <input type="number" class="form-control" id="trackLaps" placeholder="Enter Number of Laps" required>
+          </div>
+          <div class="form-group">
+            <label for="trackBaseLapTime">Base Lap Time (seconds)</label>
+            <input type="number" class="form-control" id="trackBaseLapTime" placeholder="Enter Base Lap Time" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Track</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div><!-- Add/Edit Track Modal -->
+<div class="modal fade" id="addTrackModal" tabindex="-1" role="dialog" aria-labelledby="addTrackModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTrackModalLabel">Add New Track</h5> <!-- This is crucial to match the JS -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="trackForm">
+          <input type="hidden" id="trackId"> <!-- Hidden field for track ID -->
+
+          <div class="form-group">
+            <label for="trackName">Track Name</label>
+            <input type="text" class="form-control" id="trackName" placeholder="Enter Track Name" required>
+          </div>
+          <div class="form-group">
+            <label for="trackType">Track Type</label>
+            <select id="trackType" class="form-control" required>
+              <option value="race">Race</option>
+              <option value="street">Street</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="trackLaps">Laps</label>
+            <input type="number" class="form-control" id="trackLaps" placeholder="Enter Number of Laps" required>
+          </div>
+          <div class="form-group">
+            <label for="trackBaseLapTime">Base Lap Time (seconds)</label>
+            <input type="number" class="form-control" id="trackBaseLapTime" placeholder="Enter Base Lap Time" required>
+          </div>
+          <button type="submit" class="btn btn-primary" id="trackSubmitButton">Add Track</button> <!-- This must exist for the button handler -->
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Races Tab -->
+<div class="tab-pane fade" id="races">
+  <h3>Races</h3>
+  <button class="btn btn-outline-primary mb-3" onclick="fetchRaces()">Fetch Races</button>
+
+  <!-- Invalid Records Button -->
+  <button class="btn btn-outline-danger mb-3" onclick="fetchInvalidRaces()">Invalid Record</button>
+
+  <!-- Buttons for race actions, hidden by default -->
+  <div id="race-action-buttons" style="display:none;">
+    <button class="btn btn-outline-info mb-3" onclick="showLeaderboard()">Show Leaderboard</button>
+    <button class="btn btn-outline-info mb-3" onclick="addEntrant()">Add Entrant</button>
+    <button class="btn btn-outline-info mb-3" onclick="startQualifying()">Start Qualifying</button>
+    <button class="btn btn-outline-info mb-3" onclick="newLap()">New Lap</button>
+  </div>
+
+  <!-- Race List Placeholder -->
+  <div class="races-list">
+    <!-- Add an explicit car list -->
+    <div class="car-list">
+      <!-- Cars will be displayed here -->
+    </div>
+  </div>
+</div>
+
+  <!-- Track Scraper Tab -->
+<div class="tab-pane fade" id="scraper">
+    <h3>Track Scraper</h3>
+    <button class="btn btn-outline-primary mb-3" onclick="fetchTrackNames()">Scrape Tracks</button>
+
+    <!-- Scraped Tracks Placeholder -->
+    <div class="scraped-track-list">
+      <!-- Scraped tracks or tracks from the database will be dynamically loaded here -->
+    </div>
+</div>
+
+      <!-- Settings Tab -->
+      <div class="tab-pane fade" id="settings">
+        <h3>Settings</h3>
+        <form id="settingsForm">
+          <div class="form-group">
+            <label for="teamApiBaseUrl">Team API Base URL:</label>
+            <input type="text" class="form-control" id="teamApiBaseUrl" value="http://localhost/API_Project/API/teams-api.php" required>
+          </div>
+          <div class="form-group">
+            <label for="teamsApiKey">Teams API Key (if implemented):</label>
+            <input type="text" class="form-control" id="teamsApiKey" placeholder="Enter Teams API Key">
+          </div>
+          <div class="form-group">
+            <label for="timingApiBaseUrl">Timing API Base URL:</label>
+            <input type="text" class="form-control" id="timingApiBaseUrl" value="http://localhost/API_Project/API/timing-api.php" required>
+          </div>
+          <div class="form-group">
+            <label for="timingApiKey">Timing API Key (if implemented):</label>
+            <input type="text" class="form-control" id="timingApiKey" placeholder="Enter Timing API Key">
+          </div>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+      </div>
+    </div>
+  </div> <!-- End of container -->
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script> <!-- Add the link to your app.js here to interact with backend -->
+
+</body>
+</html>

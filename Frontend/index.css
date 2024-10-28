@@ -1,0 +1,71 @@
+body {
+  background-color: #ffe5e5; /* Updated background color */
+}
+
+.navbar {
+  background-color: #ffb3b3; /* New navbar color to complement the background */
+  font-size: 18px; /* Increase navbar font size */
+}
+
+.tab-content {
+  margin-top: 20px;
+  font-size: 16px; /* Increase tab content font size */
+}
+
+.driver-list {
+  background-color: #ffcccc; /* Lighter shade for the driver list */
+  padding: 15px; /* Increase padding for better spacing */
+  border-radius: 10px;
+}
+
+.driver-item {
+  padding: 15px; /* Increase padding for driver items */
+  margin: 5px 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px; /* Increase font size for driver items */
+}
+
+.driver-item:hover {
+  background-color: #ffb3b3; /* Change hover color to a darker shade */
+}
+
+.btn-group {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-group button {
+  margin-left: 5px;
+  padding: 10px 15px; /* Increase button padding */
+  font-size: 16px; /* Increase button font size */
+  border-radius: 5px; /* Add border radius for button style */
+  background-color: #ffb3b3; /* Button color matches navbar */
+  color: white; /* Set text color for buttons */
+  border: none; /* Remove border */
+  cursor: pointer; /* Change cursor on hover */
+}
+
+.btn-group button:hover {
+  background-color: black; /* Change button background color on hover */
+}
+
+.fab-button {
+  position: fixed;
+  bottom: 60px;
+  right: 40px;
+  background-color: #ffb3b3; /* FAB button color to match the theme */
+  color: black;
+  border-radius: 50%;
+  width: 120px; /* FAB button width */
+  height: 120px; /* FAB button height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 28px; /* Increase font size for FAB button text */
+}
+
+.car-list {
+  display: block !important;
+  
+}
